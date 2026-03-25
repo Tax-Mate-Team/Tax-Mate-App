@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm ls:*)",
+      "Bash(pkill -f \"expo start\")",
+      "Bash(npm install:*)",
+      "Bash(expect:*)",
+      "Bash(curl -s \"http://localhost:8081/index.bundle?platform=android\")",
+      "Bash(adb logcat:*)",
+      "Bash(pkill -f \"metro\")",
+      "Bash(npx expo:*)",
+      "Bash(adb shell:*)",
+      "Bash(curl -s \"http://localhost:8081/index.bundle?platform=android&dev=true&minify=false\")",
+      "Bash(curl -sv \"http://localhost:8081/index.bundle?platform=android&dev=true&minify=false\")",
+      "Bash(curl -s \"http://localhost:8081/reload\")",
+      "Bash(npm uninstall:*)",
+      "Bash(while read:*)",
+      "Bash(do sed:*)",
+      "Bash(done)"
+    ]
+  }
+}
