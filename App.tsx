@@ -1,7 +1,11 @@
 import "./global.css";
 
 import { StatusBar } from "expo-status-bar";
-import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
+import {
+  NavigationContainer,
+  DefaultTheme,
+  DarkTheme,
+} from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -14,7 +18,6 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 1000 * 60,
       refetchOnWindowFocus: false,
     },
   },
@@ -24,7 +27,10 @@ function AppContent() {
   const { isDark } = useTheme();
 
   const navTheme = isDark
-    ? { ...DarkTheme, colors: { ...DarkTheme.colors, background: "#0F0F1E", card: "#1E1E36" } }
+    ? {
+        ...DarkTheme,
+        colors: { ...DarkTheme.colors, background: "#0F0F1E", card: "#1E1E36" },
+      }
     : DefaultTheme;
 
   return (

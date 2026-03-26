@@ -1,6 +1,6 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Switch, Platform } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { tintBg } from "../../../theme/tokens";
+import { tintBg, colors } from "../../../theme/tokens";
 import { useTheme } from "../../../theme/ThemeContext";
 import { Card } from "../../../components";
 
@@ -10,6 +10,7 @@ type MenuItem = {
   sub?: string;
   color: string;
   onPress?: () => void;
+  toggle?: { value: boolean; onValueChange: (v: boolean) => void };
 };
 
 type MenuSectionProps = {
@@ -29,7 +30,7 @@ export default function MenuSection({ title, items }: MenuSectionProps) {
         {items.map((item, i) => (
           <Pressable
             key={item.label}
-            onPress={item.onPress}
+            onPress={item.toggle ? undefined : item.onPress}
             className="flex-row items-center px-5 py-4 active:opacity-70"
             style={i < items.length - 1 ? { borderBottomWidth: 1, borderBottomColor: t.border } : {}}
           >
@@ -43,7 +44,18 @@ export default function MenuSection({ title, items }: MenuSectionProps) {
               <Text style={{ color: t.text }} className="text-sm font-semibold">{item.label}</Text>
               {item.sub && <Text style={{ color: t.textMuted }} className="text-xs mt-0.5">{item.sub}</Text>}
             </View>
-            <Ionicons name="chevron-forward" size={18} color={t.textMuted} />
+            {item.toggle ? (
+              <Switch
+                value={item.toggle.value}
+                onValueChange={item.toggle.onValueChange}
+                trackColor={{ false: colors.gray[300], true: colors.primary[400] }}
+                thumbColor={colors.white}
+                ios_backgroundColor={colors.gray[300]}
+                style={{ transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] }}
+              />
+            ) : (
+              <Ionicons name="chevron-forward" size={18} color={t.textMuted} />
+            )}
           </Pressable>
         ))}
       </Card>

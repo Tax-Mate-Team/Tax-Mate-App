@@ -30,8 +30,10 @@ export default function CalculatorScreen() {
   const { t } = useTheme();
   const { showToast } = useToast();
 
-  const [withholdingResult, setWithholdingResult] = useState<WithholdingTaxResponse | null>(null);
-  const [incomeTaxResult, setIncomeTaxResult] = useState<IncomeTaxResponse | null>(null);
+  const [withholdingResult, setWithholdingResult] =
+    useState<WithholdingTaxResponse | null>(null);
+  const [incomeTaxResult, setIncomeTaxResult] =
+    useState<IncomeTaxResponse | null>(null);
 
   const withholdingMutation = useCalculateWithholdingTax({
     mutation: {
@@ -81,8 +83,10 @@ export default function CalculatorScreen() {
     setIncomeTaxResult(null);
   };
 
-  const isLoading = withholdingMutation.isPending || incomeTaxMutation.isPending;
-  const hasResult = mode === "withholding" ? !!withholdingResult : !!incomeTaxResult;
+  const isLoading =
+    withholdingMutation.isPending || incomeTaxMutation.isPending;
+  const hasResult =
+    mode === "withholding" ? !!withholdingResult : !!incomeTaxResult;
 
   return (
     <ScrollView
@@ -91,7 +95,10 @@ export default function CalculatorScreen() {
       contentContainerStyle={{ paddingTop: insets.top, paddingBottom: 100 }}
       showsVerticalScrollIndicator={false}
     >
-      <ScreenHeader title="세금 계산기" subtitle="로그인 없이 바로 계산해보세요" />
+      <ScreenHeader
+        title="세금 계산기"
+        subtitle="로그인 없이 바로 계산해보세요"
+      />
 
       <FadeIn delay={0}>
         <ModeSelector mode={mode} onModeChange={handleModeChange} />
@@ -102,8 +109,15 @@ export default function CalculatorScreen() {
           mode={mode}
           amount={amount}
           expense={expense}
-          onAmountChange={(t) => { setAmount(formatInput(t)); setWithholdingResult(null); setIncomeTaxResult(null); }}
-          onExpenseChange={(t) => { setExpense(formatInput(t)); setIncomeTaxResult(null); }}
+          onAmountChange={(t) => {
+            setAmount(formatInput(t));
+            setWithholdingResult(null);
+            setIncomeTaxResult(null);
+          }}
+          onExpenseChange={(t) => {
+            setExpense(formatInput(t));
+            setIncomeTaxResult(null);
+          }}
           onCalculate={handleCalculate}
           loading={isLoading}
         />

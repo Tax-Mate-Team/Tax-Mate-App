@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
@@ -6,6 +7,7 @@ import { colors } from "../../theme/tokens";
 import { useTheme } from "../../theme/ThemeContext";
 import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "../../contexts/ToastContext";
+import { useOnboardingStore } from "../../stores/onboardingStore";
 import { ScreenHeader, FadeIn } from "../../components";
 import ProfileCard from "./components/ProfileCard";
 import MenuSection from "./components/MenuSection";
@@ -17,8 +19,8 @@ export default function SettingsScreen() {
   const { showToast } = useToast();
   const navigation = useNavigation();
   const queryClient = useQueryClient();
-
-  const modeLabel = isDark ? "켜짐" : "꺼짐";
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const resetOnboarding = useOnboardingStore((s) => s.reset);
 
   const handleLogout = () => {
     logout();
@@ -48,11 +50,40 @@ export default function SettingsScreen() {
     {
       title: "앱 설정",
       items: [
-        { icon: "notifications-outline" as const, label: "알림 설정", color: colors.gray[500] },
-        { icon: "moon-outline" as const, label: "다크 모드", sub: modeLabel, color: isDark ? colors.primary[400] : colors.gray[500], onPress: toggle },
+        {
+          icon: "notifications-outline" as const,
+          label: "알림 설정",
+          color: colors.gray[500],
+          toggle: { value: notificationEnabled, onValueChange: setNotificationEnabled },
+        },
+        {
+          icon: "moon-outline" as const,
+          label: "다크 모드",
+          color: isDark ? colors.primary[400] : colors.gray[500],
+          toggle: { value: isDark, onValueChange: () => toggle() },
+        },
         { icon: "information-circle-outline" as const, label: "앱 정보", sub: "v1.0.0", color: colors.gray[500] },
       ],
     },
+    {
+      title: "약관 및 정책",
+      items: [
+        { icon: "document-text-outline" as const, label: "이용약관", color: colors.gray[500], onPress: () => navigation.navigate("Legal", { type: "terms" }) },
+        { icon: "shield-outline" as const, label: "개인정보처리방침", color: colors.gray[500], onPress: () => navigation.navigate("Legal", { type: "privacy" }) },
+      ],
+    },
+    ...(__DEV__ ? [{
+      title: "개발자 도구",
+      items: [
+        {
+          icon: "refresh-outline" as const,
+          label: "온보딩 초기화",
+          sub: "앱 재시작 시 온보딩이 다시 표시됩니다",
+          color: colors.warning[500],
+          onPress: () => { resetOnboarding(); showToast("온보딩이 초기화되었습니다. 앱을 재시작하세요", "info"); },
+        },
+      ],
+    }] : []),
   ];
 
   return (

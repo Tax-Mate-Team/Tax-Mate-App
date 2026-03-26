@@ -80,7 +80,7 @@ export default function HomeScreen() {
     ]);
   };
 
-  const greeting = user ? `${user.nickname}님의 수입 현황` : "Tax Mate";
+  const greeting = user ? `${user.nickname}님의 수입 현황` : "회원님";
 
   return (
     <PullToRefresh

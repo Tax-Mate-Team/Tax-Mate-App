@@ -14,6 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { colors, shadows } from "../../theme/tokens";
 import { useOnboardingStore } from "../../stores/onboardingStore";
 import SlideIllustration from "./SlideIllustration";
+import TermsAgreement from "./TermsAgreement";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
@@ -76,6 +77,7 @@ export default function OnboardingScreen() {
   const scrollX = useRef(new Animated.Value(0)).current;
   const scrollXJs = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showTerms, setShowTerms] = useState(false);
 
   const onViewableItemsChanged = useCallback(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
@@ -92,66 +94,54 @@ export default function OnboardingScreen() {
     if (currentIndex < SLIDES.length - 1) {
       flatListRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true });
     } else {
-      completeOnboarding();
+      setShowTerms(true);
     }
   };
 
   const isLast = currentIndex === SLIDES.length - 1;
 
-  const renderSlide = ({ item, index }: ListRenderItemInfo<Slide>) => {
-    return (
-      <View style={{ width: SCREEN_WIDTH, flex: 1, paddingHorizontal: 32 }}>
-        {/* 일러스트레이션 */}
-        <View className="flex-1 justify-center items-center">
-          <SlideIllustration slide={item} index={index} scrollX={scrollX} />
-        </View>
+  if (showTerms) {
+    return <TermsAgreement onComplete={completeOnboarding} />;
+  }
 
-        {/* 텍스트 영역 */}
-        <View className="mb-4">
-          <Text className="text-3xl font-bold text-center" style={{ color: colors.gray[900], lineHeight: 40 }}>
-            {item.title}
-          </Text>
-          <Text
-            className="text-base text-center mt-3"
-            style={{ color: colors.gray[500], lineHeight: 24 }}
-          >
-            {item.subtitle}
-          </Text>
-
-          {/* 기능 태그들 */}
-          <View className="flex-row flex-wrap justify-center mt-6 gap-2">
-            {item.features.map((f) => (
-              <View
-                key={f.text}
-                className="flex-row items-center px-3.5 py-2 rounded-full"
-                style={{ backgroundColor: item.accentBg }}
-              >
-                <Ionicons name={f.icon} size={14} color={item.accentColor} style={{ marginRight: 5 }} />
-                <Text className="text-xs font-semibold" style={{ color: item.accentColor }}>
-                  {f.text}
-                </Text>
-              </View>
-            ))}
-          </View>
+  const renderSlide = ({ item, index }: ListRenderItemInfo<Slide>) => (
+    <View style={{ width: SCREEN_WIDTH, flex: 1, paddingHorizontal: 32 }}>
+      <View className="flex-1 justify-center items-center">
+        <SlideIllustration slide={item} index={index} scrollX={scrollX} />
+      </View>
+      <View className="mb-4">
+        <Text className="text-3xl font-bold text-center" style={{ color: colors.gray[900], lineHeight: 40 }}>
+          {item.title}
+        </Text>
+        <Text className="text-base text-center mt-3" style={{ color: colors.gray[500], lineHeight: 24 }}>
+          {item.subtitle}
+        </Text>
+        <View className="flex-row flex-wrap justify-center mt-6 gap-2">
+          {item.features.map((f) => (
+            <View
+              key={f.text}
+              className="flex-row items-center px-3.5 py-2 rounded-full"
+              style={{ backgroundColor: item.accentBg }}
+            >
+              <Ionicons name={f.icon} size={14} color={item.accentColor} style={{ marginRight: 5 }} />
+              <Text className="text-xs font-semibold" style={{ color: item.accentColor }}>{f.text}</Text>
+            </View>
+          ))}
         </View>
       </View>
-    );
-  };
+    </View>
+  );
 
   return (
     <View className="flex-1" style={{ backgroundColor: colors.white, paddingTop: insets.top }}>
-      {/* 상단 건너뛰기 */}
       <View className="flex-row justify-end px-6 py-3">
         {!isLast && (
-          <Pressable onPress={completeOnboarding} className="px-3 py-1.5 active:opacity-60">
-            <Text className="text-sm font-medium" style={{ color: colors.gray[400] }}>
-              건너뛰기
-            </Text>
+          <Pressable onPress={() => setShowTerms(true)} className="px-3 py-1.5 active:opacity-60">
+            <Text className="text-sm font-medium" style={{ color: colors.gray[400] }}>건너뛰기</Text>
           </Pressable>
         )}
       </View>
 
-      {/* 슬라이드 */}
       <Animated.FlatList
         ref={flatListRef}
         data={SLIDES}
@@ -171,42 +161,28 @@ export default function OnboardingScreen() {
         viewabilityConfig={viewabilityConfig}
       />
 
-      {/* 하단: 인디케이터 + 버튼 */}
       <View style={{ paddingBottom: insets.bottom + 16 }} className="px-8">
-        {/* 도트 인디케이터 */}
         <View className="flex-row justify-center items-center mb-8">
           {SLIDES.map((_, i) => {
             const inputRange = [(i - 1) * SCREEN_WIDTH, i * SCREEN_WIDTH, (i + 1) * SCREEN_WIDTH];
-            const dotWidth = scrollXJs.interpolate({
-              inputRange,
-              outputRange: [8, 24, 8],
-              extrapolate: "clamp",
-            });
-            const dotOpacity = scrollXJs.interpolate({
-              inputRange,
-              outputRange: [0.3, 1, 0.3],
-              extrapolate: "clamp",
-            });
+            const dotWidth = scrollXJs.interpolate({ inputRange, outputRange: [8, 24, 8], extrapolate: "clamp" });
+            const dotOpacity = scrollXJs.interpolate({ inputRange, outputRange: [0.3, 1, 0.3], extrapolate: "clamp" });
             return (
               <Animated.View
                 key={i}
                 style={{
-                  width: dotWidth,
-                  height: 8,
-                  borderRadius: 4,
+                  width: dotWidth, height: 8, borderRadius: 4, marginHorizontal: 4,
                   backgroundColor: SLIDES[currentIndex]?.accentColor ?? colors.primary[600],
                   opacity: dotOpacity,
-                  marginHorizontal: 4,
                 }}
               />
             );
           })}
         </View>
 
-        {/* CTA 버튼 */}
         <Pressable
           onPress={goNext}
-          className="rounded-2xl py-4.5 items-center active:opacity-90"
+          className="rounded-2xl items-center active:opacity-90"
           style={[
             { backgroundColor: SLIDES[currentIndex]?.accentColor ?? colors.primary[600], paddingVertical: 18 },
             shadows.colored(SLIDES[currentIndex]?.accentColor ?? colors.primary[600]),
