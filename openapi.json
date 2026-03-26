@@ -1,0 +1,1038 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TaxMate API",
+    "description": "프리랜서 세금 관리 서비스 API",
+    "contact": {
+      "name": "TaxMate",
+      "url": "https://github.com/chunnho/TaxMate-Be"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://taxmate-prod.us-east-1.elasticbeanstalk.com",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "지출 관리",
+      "description": "지출 등록, 조회, 수정, 삭제 (로그인 필요)"
+    },
+    {
+      "name": "수입 관리",
+      "description": "수입 등록, 조회, 수정, 삭제 (로그인 필요)"
+    },
+    { "name": "인증", "description": "회원가입, 로그인, 토큰 갱신" },
+    {
+      "name": "대시보드",
+      "description": "월별/연간 수입/지출/세금 요약 (로그인 필요)"
+    },
+    { "name": "회원", "description": "내 정보 조회/수정" },
+    {
+      "name": "세금 계산기",
+      "description": "로그인 없이 사용 가능한 세금 계산 API"
+    },
+    { "name": "헬스체크", "description": "서버 상태 확인" }
+  ],
+  "paths": {
+    "/api/incomes/{incomeId}": {
+      "get": {
+        "tags": ["수입 관리"],
+        "summary": "수입 상세 조회",
+        "description": "수입 내역 1건을 조회합니다.",
+        "operationId": "getIncome",
+        "parameters": [
+          {
+            "name": "incomeId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseIncomeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["수입 관리"],
+        "summary": "수입 수정",
+        "description": "수입 내역을 수정합니다.",
+        "operationId": "updateIncome",
+        "parameters": [
+          {
+            "name": "incomeId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateIncomeRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseIncomeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["수입 관리"],
+        "summary": "수입 삭제",
+        "description": "수입 내역을 삭제합니다. (소프트 삭제)",
+        "operationId": "deleteIncome",
+        "parameters": [
+          {
+            "name": "incomeId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/expenses/{expenseId}": {
+      "get": {
+        "tags": ["지출 관리"],
+        "summary": "지출 상세 조회",
+        "description": "지출 내역 1건을 조회합니다.",
+        "operationId": "getExpense",
+        "parameters": [
+          {
+            "name": "expenseId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseExpenseResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["지출 관리"],
+        "summary": "지출 수정",
+        "description": "지출 내역을 수정합니다.",
+        "operationId": "updateExpense",
+        "parameters": [
+          {
+            "name": "expenseId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateExpenseRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseExpenseResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["지출 관리"],
+        "summary": "지출 삭제",
+        "description": "지출 내역을 삭제합니다. (소프트 삭제)",
+        "operationId": "deleteExpense",
+        "parameters": [
+          {
+            "name": "expenseId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ApiResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/incomes": {
+      "get": {
+        "tags": ["수입 관리"],
+        "summary": "수입 목록 조회",
+        "description": "내 수입 목록을 조회합니다. year/month로 필터링 가능합니다.",
+        "operationId": "getIncomes",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListIncomeResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["수입 관리"],
+        "summary": "수입 등록",
+        "description": "새로운 수입 내역을 등록합니다. 3.3% 원천징수가 자동 계산됩니다.",
+        "operationId": "createIncome",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateIncomeRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseIncomeResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/expenses": {
+      "get": {
+        "tags": ["지출 관리"],
+        "summary": "지출 목록 조회",
+        "description": "내 지출 목록을 조회합니다. year/month 또는 category로 필터링 가능합니다.",
+        "operationId": "getExpenses",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "OFFICE_SUPPLY",
+                "EQUIPMENT",
+                "SOFTWARE",
+                "TRANSPORT",
+                "MEAL",
+                "EDUCATION",
+                "TELECOM",
+                "RENT",
+                "OUTSOURCING",
+                "TAX",
+                "INSURANCE",
+                "ETC"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseListExpenseResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["지출 관리"],
+        "summary": "지출 등록",
+        "description": "새로운 지출 내역을 등록합니다.",
+        "operationId": "createExpense",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateExpenseRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseExpenseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calculator/withholding": {
+      "post": {
+        "tags": ["세금 계산기"],
+        "summary": "원천징수 계산",
+        "description": "수입 금액을 입력하면 3.3% 원천징수액과 실수령액을 계산합니다.",
+        "operationId": "calculateWithholdingTax",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/WithholdingTaxRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseWithholdingTaxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/calculator/income-tax": {
+      "post": {
+        "tags": ["세금 계산기"],
+        "summary": "종합소득세 간편 계산",
+        "description": "연간 수입과 경비를 입력하면 예상 종합소득세를 계산합니다. 경비를 입력하지 않으면 단순경비율(60%)이 적용됩니다.",
+        "operationId": "calculateIncomeTax",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/IncomeTaxRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseIncomeTaxResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/signup": {
+      "post": {
+        "tags": ["인증"],
+        "summary": "회원가입",
+        "description": "이메일, 비밀번호, 닉네임으로 회원가입합니다.",
+        "operationId": "signup",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SignupRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/refresh": {
+      "post": {
+        "tags": ["인증"],
+        "summary": "토큰 갱신",
+        "description": "리프레시 토큰으로 새 액세스 토큰을 발급합니다.",
+        "operationId": "refresh",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RefreshRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "tags": ["인증"],
+        "summary": "로그인",
+        "description": "이메일과 비밀번호로 로그인합니다.",
+        "operationId": "login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseAuthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/members/me": {
+      "get": {
+        "tags": ["회원"],
+        "summary": "내 정보 조회",
+        "description": "현재 로그인한 회원의 정보를 조회합니다.",
+        "operationId": "getMe",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "tags": ["헬스체크"],
+        "summary": "서버 상태 확인",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMapStringString"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/yearly": {
+      "get": {
+        "tags": ["대시보드"],
+        "summary": "연간 요약",
+        "description": "해당 연도의 총 수입, 총 지출, 예상 종소세, 환급/추가납부 예상액을 조회합니다. 월별 브레이크다운 포함.",
+        "operationId": "getYearlySummary",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseYearlySummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dashboard/monthly": {
+      "get": {
+        "tags": ["대시보드"],
+        "summary": "월별 요약",
+        "description": "해당 월의 총 수입, 총 지출, 원천징수액, 순수익을 조회합니다.",
+        "operationId": "getMonthlySummary",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          },
+          {
+            "name": "month",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer", "format": "int32" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiResponseMonthlySummaryResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateIncomeRequest": {
+        "type": "object",
+        "properties": {
+          "clientName": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number" },
+          "incomeDate": { "type": "string", "format": "date" },
+          "memo": { "type": "string" }
+        },
+        "required": ["amount", "incomeDate"]
+      },
+      "ApiResponseIncomeResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/IncomeResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "IncomeResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "clientName": { "type": "string" },
+          "amount": { "type": "number" },
+          "withholdingTax": { "type": "number" },
+          "netAmount": { "type": "number" },
+          "incomeDate": { "type": "string", "format": "date" },
+          "memo": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "amount",
+          "clientName",
+          "id",
+          "incomeDate",
+          "netAmount",
+          "withholdingTax"
+        ]
+      },
+      "UpdateExpenseRequest": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number" },
+          "expenseDate": { "type": "string", "format": "date" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "OFFICE_SUPPLY",
+              "EQUIPMENT",
+              "SOFTWARE",
+              "TRANSPORT",
+              "MEAL",
+              "EDUCATION",
+              "TELECOM",
+              "RENT",
+              "OUTSOURCING",
+              "TAX",
+              "INSURANCE",
+              "ETC"
+            ]
+          },
+          "memo": { "type": "string" },
+          "isDeductible": { "type": "boolean" }
+        },
+        "required": ["amount", "category", "expenseDate", "isDeductible"]
+      },
+      "ApiResponseExpenseResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/ExpenseResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "ExpenseResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "amount": { "type": "number" },
+          "expenseDate": { "type": "string", "format": "date" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "OFFICE_SUPPLY",
+              "EQUIPMENT",
+              "SOFTWARE",
+              "TRANSPORT",
+              "MEAL",
+              "EDUCATION",
+              "TELECOM",
+              "RENT",
+              "OUTSOURCING",
+              "TAX",
+              "INSURANCE",
+              "ETC"
+            ]
+          },
+          "categoryDisplayName": { "type": "string" },
+          "memo": { "type": "string" },
+          "isDeductible": { "type": "boolean" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": [
+          "amount",
+          "category",
+          "categoryDisplayName",
+          "expenseDate",
+          "id",
+          "isDeductible",
+          "title"
+        ]
+      },
+      "CreateIncomeRequest": {
+        "type": "object",
+        "properties": {
+          "clientName": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number" },
+          "incomeDate": { "type": "string", "format": "date" },
+          "memo": { "type": "string" }
+        },
+        "required": ["amount", "incomeDate"]
+      },
+      "CreateExpenseRequest": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string", "minLength": 1 },
+          "amount": { "type": "number" },
+          "expenseDate": { "type": "string", "format": "date" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "OFFICE_SUPPLY",
+              "EQUIPMENT",
+              "SOFTWARE",
+              "TRANSPORT",
+              "MEAL",
+              "EDUCATION",
+              "TELECOM",
+              "RENT",
+              "OUTSOURCING",
+              "TAX",
+              "INSURANCE",
+              "ETC"
+            ]
+          },
+          "memo": { "type": "string" },
+          "isDeductible": { "type": "boolean" }
+        },
+        "required": ["amount", "category", "expenseDate", "isDeductible"]
+      },
+      "WithholdingTaxRequest": {
+        "type": "object",
+        "properties": { "amount": { "type": "number" } },
+        "required": ["amount"]
+      },
+      "ApiResponseWithholdingTaxResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/WithholdingTaxResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "WithholdingTaxResponse": {
+        "type": "object",
+        "properties": {
+          "grossAmount": { "type": "number" },
+          "incomeTax": { "type": "number" },
+          "localTax": { "type": "number" },
+          "totalTax": { "type": "number" },
+          "netAmount": { "type": "number" }
+        },
+        "required": [
+          "grossAmount",
+          "incomeTax",
+          "localTax",
+          "netAmount",
+          "totalTax"
+        ]
+      },
+      "IncomeTaxRequest": {
+        "type": "object",
+        "properties": {
+          "annualIncome": { "type": "number" },
+          "expenses": { "type": "number" },
+          "expenseRate": { "type": "number" }
+        },
+        "required": ["annualIncome"]
+      },
+      "ApiResponseIncomeTaxResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/IncomeTaxResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "IncomeTaxResponse": {
+        "type": "object",
+        "properties": {
+          "annualIncome": { "type": "number" },
+          "totalExpenses": { "type": "number" },
+          "incomeAmount": { "type": "number" },
+          "taxableIncome": { "type": "number" },
+          "calculatedTax": { "type": "number" },
+          "localIncomeTax": { "type": "number" },
+          "totalTax": { "type": "number" },
+          "alreadyPaidTax": { "type": "number" },
+          "estimatedRefundOrPayment": { "type": "number" },
+          "isRefund": { "type": "boolean" },
+          "appliedTaxRate": { "type": "string" },
+          "basicDeduction": { "type": "number" }
+        },
+        "required": [
+          "alreadyPaidTax",
+          "annualIncome",
+          "appliedTaxRate",
+          "basicDeduction",
+          "calculatedTax",
+          "estimatedRefundOrPayment",
+          "incomeAmount",
+          "isRefund",
+          "localIncomeTax",
+          "taxableIncome",
+          "totalExpenses",
+          "totalTax"
+        ]
+      },
+      "SignupRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "minLength": 1 },
+          "password": { "type": "string", "maxLength": 20, "minLength": 8 },
+          "nickname": { "type": "string", "maxLength": 20, "minLength": 2 }
+        }
+      },
+      "ApiResponseAuthResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/AuthResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "refreshToken": { "type": "string" },
+          "memberId": { "type": "string" },
+          "email": { "type": "string" },
+          "nickname": { "type": "string" }
+        },
+        "required": [
+          "accessToken",
+          "email",
+          "memberId",
+          "nickname",
+          "refreshToken"
+        ]
+      },
+      "RefreshRequest": {
+        "type": "object",
+        "properties": { "refreshToken": { "type": "string", "minLength": 1 } }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "minLength": 1 },
+          "password": { "type": "string", "minLength": 1 }
+        }
+      },
+      "ApiResponseMemberResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MemberResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "MemberResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "email": { "type": "string" },
+          "nickname": { "type": "string" },
+          "provider": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["email", "id", "nickname", "provider"]
+      },
+      "ApiResponseListIncomeResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/IncomeResponse" }
+          }
+        },
+        "required": ["message", "status"]
+      },
+      "ApiResponseMapStringString": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "object",
+            "additionalProperties": { "type": "string" }
+          }
+        },
+        "required": ["message", "status"]
+      },
+      "ApiResponseListExpenseResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ExpenseResponse" }
+          }
+        },
+        "required": ["message", "status"]
+      },
+      "ApiResponseYearlySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/YearlySummaryResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "MonthlyBreakdownItem": {
+        "type": "object",
+        "properties": {
+          "month": { "type": "integer", "format": "int32" },
+          "income": { "type": "number" },
+          "expense": { "type": "number" }
+        },
+        "required": ["expense", "income", "month"]
+      },
+      "YearlySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "year": { "type": "integer", "format": "int32" },
+          "totalIncome": { "type": "number" },
+          "totalExpense": { "type": "number" },
+          "totalDeductibleExpense": { "type": "number" },
+          "totalWithholdingTax": { "type": "number" },
+          "taxableIncome": { "type": "number" },
+          "estimatedIncomeTax": { "type": "number" },
+          "estimatedLocalTax": { "type": "number" },
+          "estimatedTotalTax": { "type": "number" },
+          "alreadyPaidTax": { "type": "number" },
+          "estimatedRefundOrPayment": { "type": "number" },
+          "isRefund": { "type": "boolean" },
+          "monthlyBreakdown": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/MonthlyBreakdownItem" }
+          }
+        },
+        "required": [
+          "alreadyPaidTax",
+          "estimatedIncomeTax",
+          "estimatedLocalTax",
+          "estimatedRefundOrPayment",
+          "estimatedTotalTax",
+          "isRefund",
+          "monthlyBreakdown",
+          "taxableIncome",
+          "totalDeductibleExpense",
+          "totalExpense",
+          "totalIncome",
+          "totalWithholdingTax",
+          "year"
+        ]
+      },
+      "ApiResponseMonthlySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "$ref": "#/components/schemas/MonthlySummaryResponse" }
+        },
+        "required": ["message", "status"]
+      },
+      "MonthlySummaryResponse": {
+        "type": "object",
+        "properties": {
+          "year": { "type": "integer", "format": "int32" },
+          "month": { "type": "integer", "format": "int32" },
+          "totalIncome": { "type": "number" },
+          "totalExpense": { "type": "number" },
+          "totalWithholdingTax": { "type": "number" },
+          "netProfit": { "type": "number" },
+          "incomeCount": { "type": "integer", "format": "int32" },
+          "expenseCount": { "type": "integer", "format": "int32" }
+        },
+        "required": [
+          "expenseCount",
+          "incomeCount",
+          "month",
+          "netProfit",
+          "totalExpense",
+          "totalIncome",
+          "totalWithholdingTax",
+          "year"
+        ]
+      },
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer", "format": "int32" },
+          "message": { "type": "string" },
+          "data": { "type": "object" }
+        },
+        "required": ["message", "status"]
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "description": "JWT 액세스 토큰을 입력하세요.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

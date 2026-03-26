@@ -1,7 +1,11 @@
 import { View, Text, ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { useQueryClient } from "@tanstack/react-query";
 import { colors } from "../../theme/tokens";
 import { useTheme } from "../../theme/ThemeContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { useToast } from "../../contexts/ToastContext";
 import { ScreenHeader, FadeIn } from "../../components";
 import ProfileCard from "./components/ProfileCard";
 import MenuSection from "./components/MenuSection";
@@ -9,15 +13,29 @@ import MenuSection from "./components/MenuSection";
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { isDark, toggle, t } = useTheme();
+  const { isLoggedIn, logout } = useAuth();
+  const { showToast } = useToast();
+  const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
   const modeLabel = isDark ? "켜짐" : "꺼짐";
+
+  const handleLogout = () => {
+    logout();
+    queryClient.clear();
+    showToast("로그아웃 되었습니다", "info");
+  };
 
   const MENU_SECTIONS = [
     {
       title: "계정",
-      items: [
-        { icon: "person-outline" as const, label: "로그인 / 회원가입", sub: "수입·지출을 저장하고 관리하세요", color: colors.primary[600] },
-      ],
+      items: isLoggedIn
+        ? [
+            { icon: "log-out-outline" as const, label: "로그아웃", color: colors.danger[500], onPress: handleLogout },
+          ]
+        : [
+            { icon: "person-outline" as const, label: "로그인 / 회원가입", sub: "수입·지출을 저장하고 관리하세요", color: colors.primary[600], onPress: () => navigation.navigate("Login") },
+          ],
     },
     {
       title: "세금 도움",

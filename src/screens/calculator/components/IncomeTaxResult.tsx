@@ -11,11 +11,12 @@ type IncomeTaxResultProps = {
   estimatedTax: number;
   alreadyPaid: number;
   additionalTax: number;
+  isRefund?: boolean;
 };
 
-export default function IncomeTaxResult({ numAmount, appliedExpense, taxableIncome, estimatedTax, alreadyPaid, additionalTax }: IncomeTaxResultProps) {
+export default function IncomeTaxResult({ numAmount, appliedExpense, taxableIncome, estimatedTax, alreadyPaid, additionalTax, isRefund: isRefundProp }: IncomeTaxResultProps) {
   const { t, isDark } = useTheme();
-  const isRefund = additionalTax <= 0;
+  const isRefund = isRefundProp ?? additionalTax <= 0;
   const resultColor = isRefund ? colors.success[500] : colors.danger[500];
   const resultBg = isRefund
     ? (isDark ? tintBg(colors.success[500], 0.12) : colors.success[50])

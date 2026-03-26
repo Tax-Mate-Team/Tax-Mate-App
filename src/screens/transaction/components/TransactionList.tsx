@@ -1,8 +1,9 @@
-import { View } from "react-native";
+import { View, Text } from "react-native";
+import { useTheme } from "../../../theme/ThemeContext";
 import { Card, TransactionItem, PullToRefresh } from "../../../components";
 
 type Transaction = {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   amount: number;
@@ -12,9 +13,12 @@ type Transaction = {
 type TransactionListProps = {
   transactions: Transaction[];
   onRefresh: () => Promise<void>;
+  isLoggedIn: boolean;
 };
 
-export default function TransactionList({ transactions, onRefresh }: TransactionListProps) {
+export default function TransactionList({ transactions, onRefresh, isLoggedIn }: TransactionListProps) {
+  const { t } = useTheme();
+
   return (
     <View className="flex-1 mt-4">
       <PullToRefresh
@@ -22,16 +26,24 @@ export default function TransactionList({ transactions, onRefresh }: Transaction
         contentContainerStyle={{ paddingBottom: 100, paddingHorizontal: 20 }}
       >
         <Card className="overflow-hidden">
-          {transactions.map((item, i) => (
-            <TransactionItem
-              key={item.id}
-              title={item.title}
-              subtitle={item.subtitle}
-              amount={item.amount}
-              type={item.type}
-              showBorder={i < transactions.length - 1}
-            />
-          ))}
+          {!isLoggedIn || transactions.length === 0 ? (
+            <View className="py-12 items-center">
+              <Text style={{ color: t.textMuted }} className="text-sm">
+                {isLoggedIn ? "등록된 내역이 없습니다" : "로그인하면 내역을 확인할 수 있어요"}
+              </Text>
+            </View>
+          ) : (
+            transactions.map((item, i) => (
+              <TransactionItem
+                key={item.id}
+                title={item.title}
+                subtitle={item.subtitle}
+                amount={item.amount}
+                type={item.type}
+                showBorder={i < transactions.length - 1}
+              />
+            ))
+          )}
         </Card>
       </PullToRefresh>
     </View>

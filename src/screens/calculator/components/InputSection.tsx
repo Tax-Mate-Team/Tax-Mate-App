@@ -11,9 +11,10 @@ type InputSectionProps = {
   onAmountChange: (text: string) => void;
   onExpenseChange: (text: string) => void;
   onCalculate: () => void;
+  loading?: boolean;
 };
 
-export default function InputSection({ mode, amount, expense, onAmountChange, onExpenseChange, onCalculate }: InputSectionProps) {
+export default function InputSection({ mode, amount, expense, onAmountChange, onExpenseChange, onCalculate, loading }: InputSectionProps) {
   const { t } = useTheme();
 
   return (
@@ -54,7 +55,7 @@ export default function InputSection({ mode, amount, expense, onAmountChange, on
       )}
 
       <View className="mt-5">
-        <Button title="계산하기" onPress={onCalculate} />
+        <Button title="계산하기" onPress={onCalculate} loading={loading} />
       </View>
     </Card>
   );

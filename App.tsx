@@ -4,8 +4,21 @@ import { StatusBar } from "expo-status-bar";
 import { NavigationContainer, DefaultTheme, DarkTheme } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { View } from "react-native";
-import { ThemeProvider, useTheme } from "./src/theme/ThemeContext";
-import BottomTabNavigator from "./src/navigation/BottomTabNavigator";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useTheme } from "./src/theme/ThemeContext";
+import { ToastProvider } from "./src/contexts/ToastContext";
+import { ModalProvider } from "./src/contexts/ModalContext";
+import RootNavigator from "./src/navigation/RootNavigator";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      staleTime: 1000 * 60,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 function AppContent() {
   const { isDark } = useTheme();
@@ -17,7 +30,7 @@ function AppContent() {
   return (
     <View className={`flex-1 ${isDark ? "dark" : ""}`}>
       <NavigationContainer theme={navTheme}>
-        <BottomTabNavigator />
+        <RootNavigator />
         <StatusBar style={isDark ? "light" : "dark"} />
       </NavigationContainer>
     </View>
@@ -27,9 +40,13 @@ function AppContent() {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+          <ModalProvider>
+            <AppContent />
+          </ModalProvider>
+        </ToastProvider>
+      </QueryClientProvider>
     </SafeAreaProvider>
   );
 }

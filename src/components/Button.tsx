@@ -1,4 +1,4 @@
-import { Pressable, Text } from "react-native";
+import { Pressable, Text, ActivityIndicator } from "react-native";
 import { useTheme } from "../theme/ThemeContext";
 
 type ButtonProps = {
@@ -7,9 +7,10 @@ type ButtonProps = {
   size?: "md" | "sm";
   onPress?: () => void;
   disabled?: boolean;
+  loading?: boolean;
 };
 
-export default function Button({ title, variant = "primary", size = "md", onPress, disabled }: ButtonProps) {
+export default function Button({ title, variant = "primary", size = "md", onPress, disabled, loading }: ButtonProps) {
   const { t, isDark } = useTheme();
   const py = size === "md" ? 16 : 10;
 
@@ -22,7 +23,7 @@ export default function Button({ title, variant = "primary", size = "md", onPres
   return (
     <Pressable
       onPress={onPress}
-      disabled={disabled}
+      disabled={disabled || loading}
       className="rounded-2xl px-2 items-center active:opacity-80"
       style={[
         { backgroundColor: styles.bg, paddingVertical: py },
@@ -30,12 +31,16 @@ export default function Button({ title, variant = "primary", size = "md", onPres
         disabled ? { opacity: 0.5 } : {},
       ]}
     >
-      <Text
-        className={`${size === "md" ? "text-base" : "text-sm"} font-bold`}
-        style={{ color: styles.text }}
-      >
-        {title}
-      </Text>
+      {loading ? (
+        <ActivityIndicator color={styles.text} size="small" />
+      ) : (
+        <Text
+          className={`${size === "md" ? "text-base" : "text-sm"} font-bold`}
+          style={{ color: styles.text }}
+        >
+          {title}
+        </Text>
+      )}
     </Pressable>
   );
 }

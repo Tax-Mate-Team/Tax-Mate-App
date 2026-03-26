@@ -16,7 +16,10 @@
       "Bash(npm uninstall:*)",
       "Bash(while read:*)",
       "Bash(do sed:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(npx orval:*)",
+      "Bash(npx tsc:*)",
+      "Bash(grep -r \"notification\\\\|alarm\\\\|Notification\\\\|Alarm\" /Users/gimbeomsu/Desktop/projects/Tax-Mate-App/src --include=*.ts --include=*.tsx)"
     ]
   }
 }
